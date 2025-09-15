@@ -30,7 +30,11 @@ export default async function handler(
     return res.status(400).json({ message: 'Keyword or location is required' });
   }
 
-  const apiKey = 'a04322c7-93bb-40da-a902-c8b062dcabbd';
+  const apiKey = process.env.JOOBLE_API_KEY;
+
+  if (!apiKey) {
+    return res.status(500).json({ message: 'API key not configured' });
+  }
 
   try {
     const response = await fetch(`https://br.jooble.org/api/${apiKey}`, {
