@@ -71,34 +71,6 @@ const Home: React.FC = () => {
     }
   };
 
-  // Busca inicial automática
-  useEffect(() => {
-    const initialSearch = async () => {
-      setKeyword('desenvolvedor');
-      setLocation('');
-      setLoading(true);
-      setError('');
-
-      try {
-        const response = await fetch('/api/jobs?keyword=desenvolvedor&page=1');
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Erro ao buscar vagas');
-        }
-
-        setJobs(data.jobs || []);
-        setTotalPages(data.totalPages || Math.ceil((data.total || data.jobs?.length || 0) / jobsPerPage));
-        setCurrentPage(1);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao buscar vagas');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initialSearch();
-  }, []);
 
   return (
     <>
