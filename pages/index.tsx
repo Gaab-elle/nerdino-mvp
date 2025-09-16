@@ -24,8 +24,21 @@ const Home: React.FC = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const jobsPerPage = 21;
   const { isDarkMode } = useTheme();
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleSearch = async (e: React.FormEvent, page: number = 1) => {
     e.preventDefault();
@@ -90,22 +103,24 @@ const Home: React.FC = () => {
       <Layout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Title Section */}
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: isMobile ? '32px' : '40px', padding: isMobile ? '0 16px' : '0' }}>
             <h1 style={{ 
-              fontSize: '36px', 
+              fontSize: isMobile ? '28px' : '36px', 
               fontWeight: 'bold', 
-              marginBottom: '16px',
+              marginBottom: isMobile ? '12px' : '16px',
               color: isDarkMode ? '#f9fafb' : '#1f2937',
-              transition: 'color 0.3s ease'
+              transition: 'color 0.3s ease',
+              lineHeight: isMobile ? '1.2' : '1.3'
             }}>
               Encontre sua vaga tech ideal
             </h1>
             <p style={{ 
-              fontSize: '20px', 
+              fontSize: isMobile ? '16px' : '20px', 
               color: isDarkMode ? '#d1d5db' : '#6b7280',
-              maxWidth: '600px',
+              maxWidth: isMobile ? '100%' : '600px',
               margin: '0 auto',
-              transition: 'color 0.3s ease'
+              transition: 'color 0.3s ease',
+              lineHeight: isMobile ? '1.4' : '1.5'
             }}>
               Busque entre milhares de oportunidades em tecnologia no NERDINO.
             </p>
@@ -114,16 +129,16 @@ const Home: React.FC = () => {
           {/* Search Box */}
           <div style={{
             backgroundColor: isDarkMode ? '#374151' : 'white',
-            borderRadius: '16px',
+            borderRadius: isMobile ? '12px' : '16px',
             boxShadow: isDarkMode ? '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)' : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            padding: '24px',
-            marginTop: '32px',
-            maxWidth: '672px',
+            padding: isMobile ? '20px' : '24px',
+            marginTop: isMobile ? '24px' : '32px',
+            maxWidth: isMobile ? '100%' : '672px',
             marginLeft: 'auto',
             marginRight: 'auto',
             transition: 'all 0.3s ease'
           }}>
-            <form onSubmit={handleSearch} style={{ display: 'grid', gap: '16px' }}>
+            <form onSubmit={handleSearch} style={{ display: 'grid', gap: isMobile ? '12px' : '16px' }}>
               <input
                 type="text"
                 value={keyword}
@@ -131,14 +146,15 @@ const Home: React.FC = () => {
                 placeholder="Palavra-chave (Ex: React, Python...)"
                 style={{
                   border: isDarkMode ? '1px solid #4b5563' : '1px solid #d1d5db',
-                  borderRadius: '12px',
-                  padding: '12px',
+                  borderRadius: isMobile ? '8px' : '12px',
+                  padding: isMobile ? '14px' : '12px',
                   width: '100%',
                   boxSizing: 'border-box',
                   boxShadow: isDarkMode ? '0 1px 2px 0 rgba(0, 0, 0, 0.2)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                   backgroundColor: isDarkMode ? '#1f2937' : 'white',
                   color: isDarkMode ? '#f9fafb' : '#1f2937',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  fontSize: isMobile ? '16px' : '14px'
                 }}
               />
               <input
@@ -148,19 +164,20 @@ const Home: React.FC = () => {
                 placeholder="Localização (Ex: São Paulo, Remoto...)"
                 style={{
                   border: isDarkMode ? '1px solid #4b5563' : '1px solid #d1d5db',
-                  borderRadius: '12px',
-                  padding: '12px',
+                  borderRadius: isMobile ? '8px' : '12px',
+                  padding: isMobile ? '14px' : '12px',
                   width: '100%',
                   boxSizing: 'border-box',
                   boxShadow: isDarkMode ? '0 1px 2px 0 rgba(0, 0, 0, 0.2)' : '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                   backgroundColor: isDarkMode ? '#1f2937' : 'white',
                   color: isDarkMode ? '#f9fafb' : '#1f2937',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  fontSize: isMobile ? '16px' : '14px'
                 }}
               />
               
               {/* Filtros Avançados */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
@@ -168,11 +185,12 @@ const Home: React.FC = () => {
                     backgroundColor: 'transparent',
                     color: isDarkMode ? '#9ca3af' : '#6b7280',
                     border: isDarkMode ? '1px solid #4b5563' : '1px solid #d1d5db',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
+                    padding: isMobile ? '10px 20px' : '8px 16px',
+                    borderRadius: isMobile ? '8px' : '8px',
                     cursor: 'pointer',
-                    fontSize: '14px',
-                    transition: 'all 0.2s'
+                    fontSize: isMobile ? '15px' : '14px',
+                    transition: 'all 0.2s',
+                    fontWeight: '500'
                   }}
                   onMouseEnter={(e) => {
                     (e.target as HTMLElement).style.backgroundColor = isDarkMode ? '#374151' : '#f9fafb';
@@ -183,18 +201,18 @@ const Home: React.FC = () => {
                     (e.target as HTMLElement).style.color = isDarkMode ? '#9ca3af' : '#6b7280';
                   }}
                 >
-                  {showFilters ? 'Ocultar Filtros' : 'Filtros Avançados'}
+                  {showFilters ? '✕ Ocultar Filtros' : '⚙️ Filtros Avançados'}
                 </button>
               </div>
 
               {showFilters && (
                 <div style={{ 
                   display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                  gap: '16px',
-                  padding: '16px',
+                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(200px, 1fr))', 
+                  gap: isMobile ? '12px' : '16px',
+                  padding: isMobile ? '16px' : '16px',
                   backgroundColor: isDarkMode ? '#1f2937' : '#f9fafb',
-                  borderRadius: '8px',
+                  borderRadius: isMobile ? '8px' : '8px',
                   border: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb',
                   transition: 'all 0.3s ease'
                 }}>
@@ -274,13 +292,15 @@ const Home: React.FC = () => {
                 style={{
                   backgroundColor: '#4f46e5',
                   color: 'white',
-                  padding: '12px 16px',
-                  borderRadius: '12px',
+                  padding: isMobile ? '16px 20px' : '12px 16px',
+                  borderRadius: isMobile ? '8px' : '12px',
                   fontWeight: '600',
                   border: 'none',
                   cursor: loading ? 'not-allowed' : 'pointer',
                   opacity: loading ? 0.5 : 1,
-                  transition: 'background-color 0.2s'
+                  transition: 'background-color 0.2s',
+                  fontSize: isMobile ? '16px' : '14px',
+                  minHeight: isMobile ? '48px' : 'auto'
                 }}
                 onMouseEnter={(e) => {
                   if (!loading) {
@@ -333,13 +353,14 @@ const Home: React.FC = () => {
 
           {/* Jobs */}
           <div style={{ 
-            marginTop: '40px', 
+            marginTop: isMobile ? '32px' : '40px', 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: isMobile ? '16px' : '20px',
             maxWidth: '1200px',
-            margin: '40px auto 0',
-            marginBottom: '60px'
+            margin: isMobile ? '32px auto 0' : '40px auto 0',
+            marginBottom: isMobile ? '40px' : '60px',
+            padding: isMobile ? '0 16px' : '0'
           }}>
             {loading && (
               <div style={{ 
@@ -388,9 +409,11 @@ const Home: React.FC = () => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: '40px',
-              marginBottom: '40px',
-              gap: '16px'
+              marginTop: isMobile ? '32px' : '40px',
+              marginBottom: isMobile ? '32px' : '40px',
+              gap: isMobile ? '8px' : '16px',
+              flexWrap: 'wrap',
+              padding: isMobile ? '0 16px' : '0'
             }}>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -398,14 +421,14 @@ const Home: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 20px',
+                  gap: isMobile ? '4px' : '8px',
+                  padding: isMobile ? '10px 16px' : '12px 20px',
                   backgroundColor: currentPage === 1 ? '#f3f4f6' : '#4f46e5',
                   color: currentPage === 1 ? '#9ca3af' : 'white',
                   border: 'none',
                   borderRadius: '8px',
                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '13px' : '14px',
                   fontWeight: '500',
                   transition: 'all 0.2s',
                   opacity: currentPage === 1 ? 0.5 : 1
@@ -449,14 +472,14 @@ const Home: React.FC = () => {
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
                       style={{
-                        width: '40px',
-                        height: '40px',
+                        width: isMobile ? '36px' : '40px',
+                        height: isMobile ? '36px' : '40px',
                         borderRadius: '8px',
                         border: 'none',
                         backgroundColor: currentPage === pageNum ? '#4f46e5' : '#f3f4f6',
                         color: currentPage === pageNum ? 'white' : '#374151',
                         cursor: 'pointer',
-                        fontSize: '14px',
+                        fontSize: isMobile ? '13px' : '14px',
                         fontWeight: '500',
                         transition: 'all 0.2s'
                       }}
@@ -483,14 +506,14 @@ const Home: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  padding: '12px 20px',
+                  gap: isMobile ? '4px' : '8px',
+                  padding: isMobile ? '10px 16px' : '12px 20px',
                   backgroundColor: currentPage === totalPages ? '#f3f4f6' : '#4f46e5',
                   color: currentPage === totalPages ? '#9ca3af' : 'white',
                   border: 'none',
                   borderRadius: '8px',
                   cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '13px' : '14px',
                   fontWeight: '500',
                   transition: 'all 0.2s',
                   opacity: currentPage === totalPages ? 0.5 : 1
@@ -518,9 +541,10 @@ const Home: React.FC = () => {
           {jobs.length > 0 && (
             <div style={{
               textAlign: 'center',
-              marginTop: '20px',
+              marginTop: isMobile ? '16px' : '20px',
               color: '#6b7280',
-              fontSize: '14px'
+              fontSize: isMobile ? '13px' : '14px',
+              padding: isMobile ? '0 16px' : '0'
             }}>
               Página {currentPage} de {totalPages} • {jobs.length} vagas encontradas
             </div>

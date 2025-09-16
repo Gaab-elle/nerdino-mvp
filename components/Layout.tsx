@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from '../contexts/ThemeContext';
@@ -10,7 +10,38 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const currentYear = new Date().getFullYear();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isMobileMenuOpen && !target.closest('nav')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <div style={{ 
@@ -21,27 +52,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       transition: 'background-color 0.3s ease'
     }}>
       {/* Header */}
-      <header role="banner" style={{ backgroundColor: '#1f2937', padding: '20px 0' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+      <header role="banner" style={{ backgroundColor: '#1f2937', padding: isMobile ? '16px 0' : '20px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 20px' }}>
           {/* Logo */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: isMobile ? '16px' : '20px' }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: isMobile ? '12px' : '20px',
+              flexWrap: 'wrap'
+            }}>
               <Image
                 src="/icone.png"
                 alt="NERDINO Logo"
-                width={80}
-                height={80}
+                width={isMobile ? 60 : 80}
+                height={isMobile ? 60 : 80}
                 style={{
                   objectFit: 'contain'
                 }}
               />
               <h1 style={{
                 fontFamily: "'Fira Code', monospace",
-                fontSize: '48px',
+                fontSize: isMobile ? '32px' : '48px',
                 fontWeight: '600',
                 color: 'white',
                 margin: 0,
-                letterSpacing: '2px'
+                letterSpacing: isMobile ? '1px' : '2px'
               }}>
                 NERDINO
               </h1>
@@ -54,12 +91,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   padding: '8px',
                   cursor: 'pointer',
                   color: 'white',
-                  fontSize: '20px',
+                  fontSize: isMobile ? '18px' : '20px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '40px',
-                  height: '40px',
+                  width: isMobile ? '36px' : '40px',
+                  height: isMobile ? '36px' : '40px',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
@@ -79,23 +116,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <nav id="navbar-primary" style={{ backgroundColor: 'transparent', border: 'none' }}>
             <div style={{ width: '100%' }}>
               {/* Mobile Menu Button */}
-              <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+              <div style={{ textAlign: 'center', marginBottom: isMobile ? '8px' : '10px' }}>
                 <button
                   type="button"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                  }}
                   style={{
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    backgroundColor: isMobileMenuOpen ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                    border: '2px solid rgba(255, 255, 255, 0.4)',
                     color: 'white',
-                    padding: '8px 16px',
-                    borderRadius: '4px',
+                    padding: isMobile ? '10px 20px' : '8px 16px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'block',
-                    margin: '0 auto'
+                    margin: '0 auto',
+                    fontSize: isMobile ? '16px' : '14px',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease',
+                    minWidth: '120px'
                   }}
                   className="mobile-menu-btn"
+                  onMouseEnter={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.target as HTMLElement).style.backgroundColor = isMobileMenuOpen ? 'rgba(255, 255, 255, 0.2)' : 'transparent';
+                    (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.4)';
+                  }}
                 >
-                  {isMobileMenuOpen ? '✕' : '☰'} Menu
+                  {isMobileMenuOpen ? '✕ Fechar' : '☰ Menu'}
                 </button>
               </div>
 
@@ -104,7 +156,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 id="navbar-primary-collapse"
                 style={{
                   display: isMobileMenuOpen ? 'block' : 'none',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  backgroundColor: isMobile ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+                  borderRadius: isMobile ? '12px' : '0',
+                  padding: isMobile ? '16px' : '0',
+                  margin: isMobile ? '8px 0' : '0',
+                  border: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
                 }}
                 className="navbar-collapse"
               >
@@ -113,68 +170,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   padding: 0,
                   margin: 0,
                   display: 'flex',
-                  flexDirection: 'column',
-                  gap: '10px'
+                  flexDirection: isMobile ? 'column' : 'row',
+                  gap: isMobile ? '8px' : '0',
+                  justifyContent: isMobile ? 'center' : 'center'
                 }} className="nav navbar-nav">
                   <li style={{ display: 'inline-block' }}>
-              <Link 
-                href="/" 
-                      style={{
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        textDecoration: 'none',
-                        padding: '10px 30px',
-                        display: 'block',
-                        borderRadius: '4px',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                        (e.target as HTMLElement).style.color = 'white';
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
-                      }}
-              >
-                Home
-              </Link>
-                  </li>
-                  <li style={{ display: 'inline-block' }}>
-              <Link 
-                href="/about" 
-                      style={{
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        textDecoration: 'none',
-                        padding: '10px 30px',
-                        display: 'block',
-                        borderRadius: '4px',
-                        transition: 'all 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                        (e.target as HTMLElement).style.color = 'white';
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
-                      }}
-              >
-                Sobre
-              </Link>
-                  </li>
-                  <li style={{ display: 'inline-block' }}>
                     <Link 
-                      href="/jobs" 
+                      href="/" 
+                      onClick={() => setIsMobileMenuOpen(false)}
                       style={{
                         color: 'rgba(255, 255, 255, 0.9)',
                         textDecoration: 'none',
-                        padding: '10px 30px',
+                        padding: isMobile ? '12px 24px' : '10px 30px',
                         display: 'block',
-                        borderRadius: '4px',
-                        transition: 'all 0.2s'
+                        borderRadius: isMobile ? '8px' : '4px',
+                        transition: 'all 0.2s',
+                        fontSize: isMobile ? '16px' : '14px',
+                        fontWeight: '500'
                       }}
                       onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                         (e.target as HTMLElement).style.color = 'white';
                       }}
                       onMouseLeave={(e) => {
@@ -182,13 +197,65 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
                       }}
                     >
-                      Vagas
+                      🏠 Home
+                    </Link>
+                  </li>
+                  <li style={{ display: 'inline-block' }}>
+                    <Link 
+                      href="/about" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      style={{
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        textDecoration: 'none',
+                        padding: isMobile ? '12px 24px' : '10px 30px',
+                        display: 'block',
+                        borderRadius: isMobile ? '8px' : '4px',
+                        transition: 'all 0.2s',
+                        fontSize: isMobile ? '16px' : '14px',
+                        fontWeight: '500'
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                        (e.target as HTMLElement).style.color = 'white';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
+                      }}
+                    >
+                      ℹ️ Sobre
+                    </Link>
+                  </li>
+                  <li style={{ display: 'inline-block' }}>
+                    <Link 
+                      href="/jobs" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      style={{
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        textDecoration: 'none',
+                        padding: isMobile ? '12px 24px' : '10px 30px',
+                        display: 'block',
+                        borderRadius: isMobile ? '8px' : '4px',
+                        transition: 'all 0.2s',
+                        fontSize: isMobile ? '16px' : '14px',
+                        fontWeight: '500'
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                        (e.target as HTMLElement).style.color = 'white';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
+                      }}
+                    >
+                      💼 Vagas
                     </Link>
                   </li>
                 </ul>
               </div>
             </div>
-            </nav>
+          </nav>
         </div>
       </header>
 
@@ -201,24 +268,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer style={{
         backgroundColor: isDarkMode ? '#1f2937' : '#f1f3f4',
         color: isDarkMode ? '#f9fafb' : '#000000',
-        padding: '32px 0 16px',
-        marginTop: '40px',
+        padding: isMobile ? '24px 0 16px' : '32px 0 16px',
+        marginTop: isMobile ? '32px' : '40px',
         borderTop: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb',
         transition: 'all 0.3s ease'
       }}>
         <div className="footer-container" style={{ 
           display: 'flex', 
-          justifyContent: 'space-between', 
+          flexDirection: isMobile ? 'column' : 'row',
+          justifyContent: isMobile ? 'center' : 'space-between', 
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0 20px',
-          gap: '32px'
+          padding: isMobile ? '0 16px' : '0 20px',
+          gap: isMobile ? '24px' : '32px'
         }}>
           
           {/* Coluna 1 - Contato */}
           <div className="footer-column" style={{
             flex: '1',
-            minWidth: '280px'
+            minWidth: isMobile ? 'auto' : '280px',
+            textAlign: isMobile ? 'center' : 'left'
           }}>
             <h3 style={{
               fontSize: '18px',
@@ -313,7 +382,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Coluna 2 - Redes Sociais */}
           <div className="footer-column" style={{
             flex: '1',
-            minWidth: '250px'
+            minWidth: isMobile ? 'auto' : '250px',
+            textAlign: isMobile ? 'center' : 'left'
           }}>
             <h3 style={{
               fontSize: '18px',
@@ -426,11 +496,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Coluna 3 - Sobre o NERDINO */}
           <div className="footer-column" style={{
             flex: '1',
-            minWidth: '280px'
+            minWidth: isMobile ? 'auto' : '280px',
+            textAlign: isMobile ? 'center' : 'left'
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: isMobile ? 'center' : 'flex-start',
               marginBottom: '16px'
             }}>
               <div style={{
@@ -518,6 +590,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           .mobile-menu-btn {
             display: block !important;
           }
+          .nav.navbar-nav {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
         }
         
         @media (max-width: 1024px) {
@@ -530,6 +606,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             width: 100% !important;
             max-width: 500px !important;
             margin: 0 auto !important;
+            text-align: center !important;
           }
         }
         
@@ -537,6 +614,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           .footer-container {
             gap: 20px !important;
             padding: 0 12px !important;
+          }
+          .footer-column {
+            text-align: center !important;
+          }
+        }
+        
+        /* Smooth transitions for mobile menu */
+        .navbar-collapse {
+          transition: all 0.3s ease;
+        }
+        
+        /* Better touch targets for mobile */
+        @media (max-width: 767px) {
+          .nav.navbar-nav a {
+            min-height: 44px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
         }
       `}</style>
