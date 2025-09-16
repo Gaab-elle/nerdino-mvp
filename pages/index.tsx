@@ -201,7 +201,7 @@ const Home: React.FC = () => {
                     (e.target as HTMLElement).style.color = isDarkMode ? '#9ca3af' : '#6b7280';
                   }}
                 >
-                  {showFilters ? '✕ Ocultar Filtros' : '⚙️ Filtros Avançados'}
+                  {showFilters ? 'Ocultar Filtros' : 'Filtros Avançados'}
                 </button>
               </div>
 

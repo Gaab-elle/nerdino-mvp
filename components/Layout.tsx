@@ -210,7 +210,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
-                      🏠 Home
+                      Home
                     </Link>
                   </li>
                   <li style={{ display: 'inline-block' }}>
@@ -241,7 +241,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
-                      ℹ️ Sobre
+                      Sobre
                     </Link>
                   </li>
                   <li style={{ display: 'inline-block' }}>
@@ -272,7 +272,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
-                      💼 Vagas
+                      Vagas
                     </Link>
                   </li>
                 </ul>
