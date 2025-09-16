@@ -16,7 +16,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const isMobileDevice = window.innerWidth < 768;
+      setIsMobile(isMobileDevice);
+      console.log('Mobile detected:', isMobileDevice, 'Width:', window.innerWidth);
     };
     
     checkMobile();
@@ -120,22 +122,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <button
                   type="button"
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    setIsMobileMenuOpen(!isMobileMenuOpen);
+                    console.log('Menu button clicked, current state:', isMobileMenuOpen);
+                    const newState = !isMobileMenuOpen;
+                    setIsMobileMenuOpen(newState);
+                    console.log('Menu state changed to:', newState);
                   }}
                   style={{
                     backgroundColor: isMobileMenuOpen ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
                     border: '2px solid rgba(255, 255, 255, 0.4)',
                     color: 'white',
-                    padding: isMobile ? '10px 20px' : '8px 16px',
+                    padding: isMobile ? '12px 24px' : '8px 16px',
                     borderRadius: '8px',
                     cursor: 'pointer',
                     display: 'block',
                     margin: '0 auto',
                     fontSize: isMobile ? '16px' : '14px',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     transition: 'all 0.3s ease',
-                    minWidth: '120px'
+                    minWidth: '140px',
+                    minHeight: '44px'
                   }}
                   className="mobile-menu-btn"
                   onMouseEnter={(e) => {
@@ -147,7 +154,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.4)';
                   }}
                 >
-                  {isMobileMenuOpen ? '✕ Fechar' : '☰ Menu'}
+                  {isMobileMenuOpen ? '✕ Fechar Menu' : '☰ Abrir Menu'}
                 </button>
               </div>
 
@@ -157,11 +164,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 style={{
                   display: isMobileMenuOpen ? 'block' : 'none',
                   textAlign: 'center',
-                  backgroundColor: isMobile ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+                  backgroundColor: isMobile ? 'rgba(0, 0, 0, 0.2)' : 'transparent',
                   borderRadius: isMobile ? '12px' : '0',
-                  padding: isMobile ? '16px' : '0',
-                  margin: isMobile ? '8px 0' : '0',
-                  border: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : 'none'
+                  padding: isMobile ? '20px' : '0',
+                  margin: isMobile ? '12px 0' : '0',
+                  border: isMobile ? '2px solid rgba(255, 255, 255, 0.2)' : 'none',
+                  boxShadow: isMobile ? '0 4px 12px rgba(0, 0, 0, 0.3)' : 'none'
                 }}
                 className="navbar-collapse"
               >
@@ -179,22 +187,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       href="/" 
                       onClick={() => setIsMobileMenuOpen(false)}
                       style={{
-                        color: 'rgba(255, 255, 255, 0.9)',
+                        color: 'rgba(255, 255, 255, 0.95)',
                         textDecoration: 'none',
-                        padding: isMobile ? '12px 24px' : '10px 30px',
+                        padding: isMobile ? '16px 24px' : '10px 30px',
                         display: 'block',
                         borderRadius: isMobile ? '8px' : '4px',
                         transition: 'all 0.2s',
-                        fontSize: isMobile ? '16px' : '14px',
-                        fontWeight: '500'
+                        fontSize: isMobile ? '18px' : '14px',
+                        fontWeight: '600',
+                        backgroundColor: isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                        border: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                        marginBottom: isMobile ? '8px' : '0'
                       }}
                       onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
                         (e.target as HTMLElement).style.color = 'white';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.3)';
                       }}
                       onMouseLeave={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent';
+                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.95)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
                       🏠 Home
@@ -205,22 +218,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       href="/about" 
                       onClick={() => setIsMobileMenuOpen(false)}
                       style={{
-                        color: 'rgba(255, 255, 255, 0.9)',
+                        color: 'rgba(255, 255, 255, 0.95)',
                         textDecoration: 'none',
-                        padding: isMobile ? '12px 24px' : '10px 30px',
+                        padding: isMobile ? '16px 24px' : '10px 30px',
                         display: 'block',
                         borderRadius: isMobile ? '8px' : '4px',
                         transition: 'all 0.2s',
-                        fontSize: isMobile ? '16px' : '14px',
-                        fontWeight: '500'
+                        fontSize: isMobile ? '18px' : '14px',
+                        fontWeight: '600',
+                        backgroundColor: isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                        border: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                        marginBottom: isMobile ? '8px' : '0'
                       }}
                       onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
                         (e.target as HTMLElement).style.color = 'white';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.3)';
                       }}
                       onMouseLeave={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent';
+                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.95)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
                       ℹ️ Sobre
@@ -231,22 +249,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       href="/jobs" 
                       onClick={() => setIsMobileMenuOpen(false)}
                       style={{
-                        color: 'rgba(255, 255, 255, 0.9)',
+                        color: 'rgba(255, 255, 255, 0.95)',
                         textDecoration: 'none',
-                        padding: isMobile ? '12px 24px' : '10px 30px',
+                        padding: isMobile ? '16px 24px' : '10px 30px',
                         display: 'block',
                         borderRadius: isMobile ? '8px' : '4px',
                         transition: 'all 0.2s',
-                        fontSize: isMobile ? '16px' : '14px',
-                        fontWeight: '500'
+                        fontSize: isMobile ? '18px' : '14px',
+                        fontWeight: '600',
+                        backgroundColor: isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                        border: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
+                        marginBottom: isMobile ? '8px' : '0'
                       }}
                       onMouseEnter={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.15)';
                         (e.target as HTMLElement).style.color = 'white';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.3)';
                       }}
                       onMouseLeave={(e) => {
-                        (e.target as HTMLElement).style.backgroundColor = 'transparent';
-                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.9)';
+                        (e.target as HTMLElement).style.backgroundColor = isMobile ? 'rgba(255, 255, 255, 0.05)' : 'transparent';
+                        (e.target as HTMLElement).style.color = 'rgba(255, 255, 255, 0.95)';
+                        (e.target as HTMLElement).style.borderColor = 'rgba(255, 255, 255, 0.1)';
                       }}
                     >
                       💼 Vagas
@@ -584,9 +607,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         }
         
         @media (max-width: 767px) {
-          .navbar-collapse {
-            display: none !important;
-          }
           .mobile-menu-btn {
             display: block !important;
           }
